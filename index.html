@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VEX Hero</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #000;
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .bg-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-wrap {
+      padding: 24px 24px 0;
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      border-radius: 12px;
+    }
+
+    .liquid-glass {
+      background: rgba(0, 0, 0, 0.4);
+      background-blend-mode: luminosity;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: none;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .liquid-glass::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1.4px;
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.3) 0%,
+        rgba(255,255,255,0.1) 20%,
+        rgba(255,255,255,0) 40%,
+        rgba(255,255,255,0) 60%,
+        rgba(255,255,255,0.1) 80%,
+        rgba(255,255,255,0.3) 100%
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      font-size: 14px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .nav-links a {
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: #d1d5db;
+    }
+
+    .nav-btn {
+      background: #fff;
+      color: #000;
+      padding: 8px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background: #f3f4f6;
+    }
+
+    .hero-bottom {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 24px 48px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      align-items: end;
+      gap: 32px;
+    }
+
+    h1 {
+      font-size: 40px;
+      line-height: 1.05;
+      font-weight: 400;
+      letter-spacing: -0.04em;
+      margin-bottom: 16px;
+    }
+
+    .char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateX(-18px);
+      transition: opacity 500ms ease-out, transform 500ms ease-out;
+    }
+
+    .subheading {
+      color: #d1d5db;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      max-width: 560px;
+      opacity: 0;
+      transition: opacity 1000ms ease;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      opacity: 0;
+      transition: opacity 1000ms ease;
+    }
+
+    .btn-primary {
+      background: #fff;
+      color: #000;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .btn-secondary {
+      color: #fff;
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background: #fff;
+      color: #000;
+    }
+
+    .tag-wrap {
+      display: flex;
+      justify-content: flex-start;
+      opacity: 0;
+      transition: opacity 1000ms ease;
+    }
+
+    .tag {
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 18px;
+      font-weight: 300;
+    }
+
+    .show {
+      opacity: 1;
+    }
+
+    @media (min-width: 768px) {
+      .nav-wrap {
+        padding-left: 48px;
+        padding-right: 48px;
+      }
+
+      .hero-bottom {
+        padding-left: 48px;
+        padding-right: 48px;
+      }
+
+      h1 {
+        font-size: 48px;
+      }
+
+      .subheading {
+        font-size: 18px;
+      }
+
+      .tag {
+        font-size: 20px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .nav-wrap {
+        padding-left: 64px;
+        padding-right: 64px;
+      }
+
+      .hero-bottom {
+        padding-left: 64px;
+        padding-right: 64px;
+        padding-bottom: 64px;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      h1 {
+        font-size: 60px;
+      }
+
+      .tag-wrap {
+        justify-content: flex-end;
+      }
+
+      .tag {
+        font-size: 24px;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      h1 {
+        font-size: 72px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .nav-links {
+        display: none;
+      }
+
+      .nav-btn {
+        padding: 8px 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <section class="hero">
+    <video
+      class="bg-video"
+      src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4"
+      autoplay
+      loop
+      muted
+      playsinline>
+    </video>
+
+    <div class="content">
+      <header class="nav-wrap">
+        <nav class="navbar liquid-glass">
+          <div class="logo">VEX</div>
+
+          <div class="nav-links">
+            <a href="#">Story</a>
+            <a href="#">Investing</a>
+            <a href="#">Building</a>
+            <a href="#">Advisory</a>
+          </div>
+
+          <a class="nav-btn" href="#">Start a Chat</a>
+        </nav>
+      </header>
+
+      <div class="hero-bottom">
+        <div class="hero-grid">
+          <div>
+            <h1 id="heading">Shaping tomorrow<br>with vision and action.</h1>
+
+            <p class="subheading" id="subheading">
+              We back visionaries and craft ventures that define what comes next.
+            </p>
+
+            <div class="buttons" id="buttons">
+              <a href="#" class="btn-primary">Start a Chat</a>
+              <a href="#" class="btn-secondary liquid-glass">Explore Now</a>
+            </div>
+          </div>
+
+          <div class="tag-wrap" id="tag">
+            <div class="tag liquid-glass">Investing. Building. Advisory.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const heading = document.getElementById("heading");
+    const lines = ["Shaping tomorrow", "with vision and action."];
+    const charDelay = 30;
+    const initialDelay = 200;
+
+    heading.innerHTML = "";
+
+    lines.forEach((line, lineIndex) => {
+      const lineSpan = document.createElement("span");
+      lineSpan.style.display = "block";
+
+      [...line].forEach((char, charIndex) => {
+        const span = document.createElement("span");
+        span.className = "char";
+        span.innerHTML = char === " " ? "&nbsp;" : char;
+
+        const delay =
+          initialDelay +
+          lineIndex * line.length * charDelay +
+          charIndex * charDelay;
+
+        span.style.transitionDelay = delay + "ms";
+        lineSpan.appendChild(span);
+      });
+
+      heading.appendChild(lineSpan);
+    });
+
+    setTimeout(() => {
+      document.querySelectorAll(".char").forEach((char) => {
+        char.style.opacity = "1";
+        char.style.transform = "translateX(0)";
+      });
+    }, 50);
+
+    setTimeout(() => {
+      document.getElementById("subheading").classList.add("show");
+    }, 800);
+
+    setTimeout(() => {
+      document.getElementById("buttons").classList.add("show");
+    }, 1200);
+
+    setTimeout(() => {
+      document.getElementById("tag").classList.add("show");
+    }, 1400);
+  </script>
+</body>
+</html>
