@@ -1,3 +1,2 @@
 # vextest
-
-https://mizaaaan.github.io/vextest/
+https://mizaaaan.github.io/Next-Millionaire-VEX-Test/
